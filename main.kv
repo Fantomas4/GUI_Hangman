@@ -1,0 +1,78 @@
+#:import WipeTransition kivy.uix.screenmanager.WipeTransition
+
+ScreenManagement:
+    transition: WipeTransition()
+    WelcomeScreen:
+    LoginScreen:
+    MenuScreen
+
+<WelcomeScreen>:
+    name: 'welcome_screen'
+    BoxLayout:
+        id: welcome_layout
+        orientation: 'vertical'
+        padding: 30
+
+        Label:
+            text: "*** GUI Hangman ALPHA version ***"
+            font_size: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                font_size: 50
+                text: "Login as user"
+                on_release: app.root.current = 'login_screen'
+            Button:
+                font_size: 50
+                text: "Play as guest"
+
+
+
+
+<LoginScreen>:
+    name: 'login_screen'
+
+    BoxLayout:
+        orientation: "vertical"
+        GridLayout:
+            rows: 2
+            cols: 2
+            padding: 10
+            spacing: 10
+            Label:
+                text: "User name:"
+            TextInput:
+                id: username
+            Label:
+                text: "Password:"
+            TextInput:
+                id: password
+        Button:
+            text: "Enter!"
+            on_release: app.root.current = 'menu_screen'
+
+
+
+
+
+
+<MenuScreen>:
+    name: 'menu_screen'
+
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            font_size: 25
+            text: "Start a new singleplayer game as "
+        Button:
+            font_size: 25
+            text: "Enter the options submenu"
+        Button:
+            font_size: 25
+            text: "Host a multiplayer session (BETA!)"
+        Button:
+            font_size: 25
+            text: "Join a multiplayer session (ALPHA!)"
+
+
+

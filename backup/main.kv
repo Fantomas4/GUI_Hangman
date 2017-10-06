@@ -1,0 +1,36 @@
+#:import WipeTransition kivy.uix.screenmanager.WipeTransition
+
+ScreenManagement:
+    transition: WipeTransition()
+    WelcomeScreen:
+    AnotherScreen:
+
+<WelcomeScreen>:
+    name: 'welcome_screen'
+    BoxLayout:
+        id: welcome_layout
+        orientation: 'vertical'
+        padding: 30
+
+        Label:
+            text: "*** GUI Hangman ALPHA version ***"
+            font_size: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                font_size: 50
+                text: "Login as user"
+            Button:
+                font_size: 50
+                text: "Play as guest"
+
+
+
+
+<AnotherScreen>:
+    name: 'other'
+
+    Button:
+        on_release: app.root.current = 'welcome_screen'
+        text: 'back to the home screen'
+        font_size: 50

@@ -1,0 +1,51 @@
+#:import WipeTransition kivy.uix.screenmanager.WipeTransition
+
+ScreenManagement:
+    transition: WipeTransition()
+    WelcomeScreen:
+    LoginScreen:
+
+<WelcomeScreen>:
+    name: 'welcome_screen'
+    BoxLayout:
+        id: welcome_layout
+        orientation: 'vertical'
+        padding: 30
+
+        Label:
+            text: "*** GUI Hangman ALPHA version ***"
+            font_size: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                font_size: 50
+                text: "Login as user"
+                on_release: app.root.current = 'login_screen'
+            Button:
+                font_size: 50
+                text: "Play as guest"
+
+
+
+
+<LoginScreen>:
+    name: 'login_screen'
+
+    BoxLayout:
+        orientation: "vertical"
+        GridLayout:
+            rows: 2
+            cols: 2
+            padding: 10
+            spacing: 10
+            Label:
+                text: "User name:"
+            TextInput:
+                id: username
+            Label:
+                text: "Password:"
+            TextInput:
+                id: password
+        Button:
+            text: "Enter!"
+
