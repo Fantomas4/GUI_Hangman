@@ -48,11 +48,12 @@ class LoginScreen(Screen):
         if username in users:
             print("Diagnostics: USER FOUND!")
             login_data.username = username
+            self.manager.current = 'MenuScreen'
         else:
             print("Diagnostics: USER NOT FOUND!")
         ###
 
-        self.manager.current = 'MenuScreen'
+
 
 
 class MenuScreen(Screen):
