@@ -4,7 +4,7 @@ ScreenManagement:
     transition: WipeTransition()
     WelcomeScreen:
     LoginScreen:
-    MenuScreen
+    MenuScreen:
 
 <WelcomeScreen>:
     name: 'welcome_screen'
@@ -31,10 +31,13 @@ ScreenManagement:
 
 <LoginScreen>:
     name: 'login_screen'
+    login_username_text_input: username
+    login_password_text_input: password
 
     BoxLayout:
         orientation: "vertical"
         GridLayout:
+
             rows: 2
             cols: 2
             padding: 10
@@ -49,7 +52,7 @@ ScreenManagement:
                 id: password
         Button:
             text: "Enter!"
-            on_release: app.root.current = 'menu_screen'
+            on_release: root.login_func()
 
 
 
