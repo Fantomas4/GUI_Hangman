@@ -6,6 +6,9 @@ from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 
+
+
+
 class WelcomeScreen(Screen):
     pass
 
@@ -13,9 +16,12 @@ class LoginScreen(Screen):
     pass
     login_username_text_input = ObjectProperty()
     login_password_text_input = ObjectProperty()
+    main_menu = ObjectProperty()
 
     def login_func(self):
         print("DIAG: username is: ", self.login_username_text_input.text)
+        self.manager.current = 'MenuScreen'
+
 
 class MenuScreen(Screen):
     pass

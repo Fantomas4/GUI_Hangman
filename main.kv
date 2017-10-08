@@ -1,10 +1,21 @@
 #:import WipeTransition kivy.uix.screenmanager.WipeTransition
 
+
 ScreenManagement:
     transition: WipeTransition()
+    id: screen_manager
     WelcomeScreen:
+        id: welcome_screen
+        name: 'WelcomeScreen'
+        manager: screen_manager
     LoginScreen:
+        id: login_screen
+        name: 'LoginScreen'
+        manager: screen_manager
     MenuScreen:
+        id: menu_screen
+        name: 'MenuScreen'
+        manager: screen_manager
 
 <WelcomeScreen>:
     name: 'welcome_screen'
@@ -21,7 +32,7 @@ ScreenManagement:
             Button:
                 font_size: 50
                 text: "Login as user"
-                on_release: app.root.current = 'login_screen'
+                on_release: app.root.current = 'LoginScreen'
             Button:
                 font_size: 50
                 text: "Play as guest"
@@ -33,6 +44,7 @@ ScreenManagement:
     name: 'login_screen'
     login_username_text_input: username
     login_password_text_input: password
+
 
     BoxLayout:
         orientation: "vertical"
@@ -53,10 +65,6 @@ ScreenManagement:
         Button:
             text: "Enter!"
             on_release: root.login_func()
-
-
-
-
 
 
 <MenuScreen>:
