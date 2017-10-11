@@ -16,6 +16,10 @@ ScreenManagement:
         id: menu_screen
         name: 'MenuScreen'
         manager: screen_manager
+    SingleplayerGameScreen:
+        id: singleplayer_screen
+        name: 'SingleplayerGameScreen'
+        manager: screen_manager
 
 <WelcomeScreen>:
     name: 'welcome_screen'
@@ -75,6 +79,7 @@ ScreenManagement:
         Button:
             id: menu_option1
             font_size: 25
+            on_release: app.root.current = 'SingleplayerGameScreen'
         Button:
             font_size: 25
             text: "Enter the options submenu"
@@ -85,5 +90,15 @@ ScreenManagement:
             font_size: 25
             text: "Join a multiplayer session (ALPHA!)"
 
+
+<SingleplayerGameScreen>:
+    name: 'singleplayer_screen'
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 30
+        spacing: 20
+        Label:
+            id: word_display
 
 
