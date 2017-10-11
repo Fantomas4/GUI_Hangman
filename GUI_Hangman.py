@@ -54,21 +54,28 @@ class LoginScreen(Screen):
         ###
 
 
-
-
 class MenuScreen(Screen):
+
     def on_pre_enter(self, *args):
         self.change_button1_text()
+
     def change_button1_text(self):
         self.ids.menu_option1.text = "Start a new singleplayer game as " + login_data.username
 
+
 class SingleplayerGameScreen(Screen):
     word_list = []
+    target_word = ">>>NO_WORD!<<<"
+
     def on_pre_enter(self, *args):
+
         with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
             self.word_list = dictionary.read().upper().splitlines()
-            print('diag: word_list is: ',self.word_list)
-
+            print('diag: word_list is: ', self.word_list)
+        import random
+        self.target_word = random.choice(self.word_list)
+        print("diag: target_word is: ", self.target_word)
+        self.ids.word_display.text = self.target_word
 
 
 class ScreenManagement(ScreenManager):
