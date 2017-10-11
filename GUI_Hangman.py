@@ -57,7 +57,13 @@ class LoginScreen(Screen):
 
 
 class MenuScreen(Screen):
-    pass
+    def on_pre_enter(self, *args):
+        self.change_button1_text()
+    def change_button1_text(self):
+        self.ids.menu_option1.text = "Start a new singleplayer game as " + login_data.username
+
+
+
 
 class ScreenManagement(ScreenManager):
     pass
