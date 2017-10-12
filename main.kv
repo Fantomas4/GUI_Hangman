@@ -93,6 +93,7 @@ ScreenManagement:
 
 <SingleplayerGameScreen>:
     name: 'singleplayer_screen'
+    guess_input: gu_input
 
     BoxLayout:
         orientation: "vertical"
@@ -100,5 +101,16 @@ ScreenManagement:
         spacing: 20
         Label:
             id: word_display
+        Label:
+            id: gu_left
+        Label:
+            id: wrong_gu
+        TextInput:
+            id: gu_input
+        Button:
+            text: "Submit!"
+            id: submit_gu
+        Label:
+            id: msg_box
 
 
