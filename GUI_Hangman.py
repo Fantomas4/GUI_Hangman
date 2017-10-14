@@ -90,14 +90,15 @@ class MainSinglegameClass:
             # user guess entry is INVALID and is rejected by the game
             # appropriate error message should be displayed
             self.input_error_msg = "Error: \n"
-            if v_res_dict["string"] is False:
+            if v_res_dict["string"] is True:
+                if v_res_dict["single"] is False:
+                    self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
+                if v_res_dict["unique"] is False and v_res_dict["single"] is True:
+                    self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
+                if v_res_dict["letter"] is False:
+                    self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
+            else:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a character as input.\n"
-            if v_res_dict["single"] is False:
-                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
-            if v_res_dict["unique"] is False and v_res_dict["single"] is True:
-                self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
-            if v_res_dict["letter"] is False:
-                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
 
         self.game_state(gu_char)
 
