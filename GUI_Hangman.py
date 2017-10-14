@@ -64,6 +64,10 @@ class MainSinglegameClass:
                 letter = True
             else:
                 letter = False
+        else:
+            single = True
+            unique = True
+            letter = True
 
         res_dict["string"] = string
         res_dict["single"] = single
