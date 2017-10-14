@@ -5,8 +5,10 @@ class login_data(object):
     users_index = 0
     username = "guest"
 
-class MainGameClass:
+class MainSinglegameClass:
 
+    target_word = None
+    target_word_len = None
     char_found = 0
     word_print = []
     wrong_used_char = []
@@ -14,7 +16,22 @@ class MainGameClass:
     gu_left = 6
     match_found = False
     user_gu_accepted = False
-    gu_error_msg = None
+    input_error_msg = None # errors from gu_validity_check for user char input, if there are any
+
+    def set_target_word(self, target_word):
+        self.target_word = target_word
+        self.target_word = target_word
+        self.target_word_len = len(target_word)
+        print("MPIKA set_target_word function!!!!!!!")
+
+        for i in range(0, self.target_word_len):
+            self.word_print.append("_")
+
+    def get_input_error_msg(self):
+        return self.input_error_msg
+
+    def get_input_valid_status(self):
+        return self.user_gu_accepted
 
     def gu_validity_check(self, char_gu, total_used_char, res_dict):
 
@@ -52,14 +69,14 @@ class MainGameClass:
 
 
 
-    def get_user_guess(self, char_gu):
-        char_gu = char_gu.upper()
+    def get_user_guess(self, gu_char):
+        gu_char = gu_char.upper()
 
         self.user_gu_accepted = False #reset class fields
-        self.gu_error_msg = None      #reset class fields
+        self.input_error_msg = None      #reset class fields
         v_res_dict = {}               #validity_result_dictionary
 
-        self.gu_validity_check(char_gu, self.total_used_char, v_res_dict)
+        self.gu_validity_check(gu_char, self.total_used_char, v_res_dict)
 
         if v_res_dict["string"] is True and v_res_dict["single"] is True and v_res_dict["unique"] is True  and v_res_dict["letter"] is True:
             #user guess entry is valid and is accepted by the game
@@ -67,16 +84,40 @@ class MainGameClass:
         else:
             # user guess entry is INVALID and is rejected by the game
             # appropriate error message should be displayed
-            self.gu_error_msg = "Error: \n"
+            self.input_error_msg = "Error: \n"
             if v_res_dict["string"] is False:
-                self.gu_error_msg = self.gu_error_msg + "Wrong entry! Please enter a character as input.\n"
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a character as input.\n"
             if v_res_dict["single"] is False:
-                self.gu_error_msg = self.gu_error_msg + "Wrong entry! Please enter a single character as input.\n"
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
             if v_res_dict["unique"] is False:
-                self.gu_error_msg = self.gu_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
+                self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
             if v_res_dict["letter"] is False:
-                self.gu_error_msg = self.gu_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
 
+        self.game_state(gu_char)
+
+    def game_state(self, gu_char):
+
+        match_found = False
+        self.total_used_char.append(gu_char)
+
+        for i in range(0, self.target_len):
+            if self.target_word[i] == gu_char:
+                match_found = True
+                self.char_found += 1
+                self.word_print[i] = gu_char
+
+        if match_found is False:
+            print("\n\nWrong guess!")
+            self.gu_msg = "Wrong guess!"
+            self.wrong_used_char.append(gu_char)
+            self.gu_left = self.gu_left - 1
+
+    def check_win_status(self):
+        if self.char_found < self.target_word_len:
+            return False
+        elif self.char_found == self.target_word_len and self.gu_left >= 0:
+            return True
 
 
 
@@ -141,8 +182,6 @@ class SingleplayerGameScreen(Screen):
     # word_print = None
     guess_input = ObjectProperty()
 
-
-
     def on_pre_enter(self, *args):
 
         with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
@@ -151,7 +190,15 @@ class SingleplayerGameScreen(Screen):
         import random
         self.target_word = random.choice(self.word_list)
         print("diag: target_word is: ", self.target_word)
-        #self.ids.word_display.text = self.target_word
+
+
+    def on_enter(self, *args):
+        game_instance = MainSinglegameClass()
+        game_instance.set_target_word(self.target_word)
+        word_str = ''.join(game_instance.word_print) #convert word_print array to string
+        self.ids.word_display.text = word_str
+
+
 
 
 
