@@ -70,7 +70,9 @@ class MainSinglegameClass:
 
 
     def get_user_guess(self, gu_char):
+        gu_char = gu_char.text # converts input from GUI input to text
         gu_char = gu_char.upper()
+        print("get_user_guess got from GUI: ",gu_char)
 
         self.user_gu_accepted = False #reset class fields
         self.input_error_msg = None      #reset class fields
@@ -101,7 +103,7 @@ class MainSinglegameClass:
         match_found = False
         self.total_used_char.append(gu_char)
 
-        for i in range(0, self.target_len):
+        for i in range(0, self.target_word_len):
             if self.target_word[i] == gu_char:
                 match_found = True
                 self.char_found += 1
@@ -181,6 +183,7 @@ class SingleplayerGameScreen(Screen):
     target_word = None
     # word_print = None
     guess_input = ObjectProperty()
+    game_instance = MainSinglegameClass()
 
     def on_pre_enter(self, *args):
 
@@ -193,9 +196,9 @@ class SingleplayerGameScreen(Screen):
 
 
     def on_enter(self, *args):
-        game_instance = MainSinglegameClass()
-        game_instance.set_target_word(self.target_word)
-        word_str = ''.join(game_instance.word_print) #convert word_print array to string
+
+        self.game_instance.set_target_word(self.target_word)
+        word_str = ''.join(self.game_instance.word_print) #convert word_print array to string
         self.ids.word_display.text = word_str
 
 

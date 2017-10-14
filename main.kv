@@ -100,6 +100,7 @@ ScreenManagement:
         padding: 30
         spacing: 20
         Label:
+            font_size: 80
             id: word_display
         Label:
             id: gu_left
@@ -108,7 +109,7 @@ ScreenManagement:
         Button:
             text: "Submit!"
             id: submit_gu
-            on_press:
+            on_press: root.game_instance.get_user_guess(gu_input)
         Label:
             id: guess_status
         Label:
