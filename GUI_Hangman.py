@@ -36,6 +36,9 @@ class MainSinglegameClass:
     def get_input_valid_status(self):
         return self.user_gu_accepted
 
+    def get_gu_left(self):
+        return str(self.gu_left) #returns gu_left converting it from int to string
+
     def gu_validity_check(self, char_gu, total_used_char, res_dict):
 
         try:  #
@@ -69,9 +72,6 @@ class MainSinglegameClass:
 
         return
 
-
-
-
     def set_user_guess(self, gu_char):
         gu_char = gu_char.text # converts input from GUI input to text
         gu_char = gu_char.upper()
@@ -94,7 +94,7 @@ class MainSinglegameClass:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a character as input.\n"
             if v_res_dict["single"] is False:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
-            if v_res_dict["unique"] is False:
+            if v_res_dict["unique"] is False and v_res_dict["single"] is True:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
             if v_res_dict["letter"] is False:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
@@ -187,7 +187,9 @@ class SingleplayerGameScreen(Screen):
     # word_print = None
     guess_input = ObjectProperty()
     word_output = ObjectProperty()
+    gu_left_output = ObjectProperty()
     game_instance = MainSinglegameClass()
+    error_msg_output = ObjectProperty()
 
     def on_pre_enter(self, *args):
 
@@ -198,17 +200,21 @@ class SingleplayerGameScreen(Screen):
         self.target_word = random.choice(self.word_list)
         print("diag: target_word is: ", self.target_word)
 
-    def on_enter(self, *args):
-
         self.game_instance.set_target_word(self.target_word)
-        # word_str = ''.join(self.game_instance.word_print) #convert word_print array to string
-        # self.ids.word_display.text = word_str
+        self.word_output.text = self.game_instance.get_cur_word()
+        self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"
+
+    def on_enter(self, *args):
+        pass
 
     def run_game(self, gu_input):
-        self.game_instance.set_user_guess(gu_input)
-        self.word_output.text = self.game_instance.get_cur_word()
-
-
+        self.game_instance.set_user_guess(gu_input) # passes user guess input to methods of game_instance
+        self.word_output.text = self.game_instance.get_cur_word() # updates word shown
+        self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left" # updates guesses left text shown
+        if self.game_instance.get_input_valid_status() is True:
+            pass
+        else:
+            self.error_msg_output.text = self.game_instance.get_input_error_msg()
 
 
 

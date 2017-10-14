@@ -95,6 +95,9 @@ ScreenManagement:
     name: 'singleplayer_screen'
     guess_input: gu_input
     word_output: word_display
+    gu_left_output: gu_left
+    error_msg_output: msg_box
+
     BoxLayout:
         orientation: "vertical"
         padding: 30
@@ -105,6 +108,8 @@ ScreenManagement:
             font_size: 80
         Label:
             id: gu_left
+            text:
+            font_size: 50
         TextInput:
             id: gu_input
         Button:
@@ -115,5 +120,6 @@ ScreenManagement:
             id: guess_status
         Label:
             id: msg_box
+            text:
 
 
