@@ -94,14 +94,15 @@ ScreenManagement:
 <SingleplayerGameScreen>:
     name: 'singleplayer_screen'
     guess_input: gu_input
-
+    word_output: word_display
     BoxLayout:
         orientation: "vertical"
         padding: 30
         spacing: 20
         Label:
-            font_size: 80
             id: word_display
+            text:
+            font_size: 80
         Label:
             id: gu_left
         TextInput:
@@ -109,7 +110,7 @@ ScreenManagement:
         Button:
             text: "Submit!"
             id: submit_gu
-            on_press: root.game_instance.get_user_guess(gu_input)
+            on_press: root.run_game(gu_input)
         Label:
             id: guess_status
         Label:
