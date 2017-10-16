@@ -123,11 +123,14 @@ class MainSinglegameClass:
             self.wrong_used_char.append(gu_char)
             self.gu_left = self.gu_left - 1
 
-    def check_win_status(self):
-        if self.char_found < self.target_word_len:
-            return False
-        elif self.char_found == self.target_word_len and self.gu_left >= 0:
-            return True
+    def check_game_status(self):
+        # returns: -1 for loss, 0 for in progress, 1 for win
+        if self.gu_left <= 1:
+            return -1
+        elif self.char_found < self.target_word_len:
+            return 0
+        elif self.char_found == self.target_word_len and self.gu_left > 0:
+            return 1
 
 
 
@@ -212,15 +215,23 @@ class SingleplayerGameScreen(Screen):
     def on_enter(self, *args):
         pass
 
-    def run_game(self, gu_input):
-        self.game_instance.set_user_guess(gu_input) # passes user guess input to methods of game_instance
-        self.word_output.text = self.game_instance.get_cur_word() # updates word shown
-        self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left" # updates guesses left text shown
-        if self.game_instance.get_input_valid_status() is True:
-            pass
-        else:
-            self.error_msg_output.text = self.game_instance.get_input_error_msg()
+    def run_game(self, gu_input):  # gets called when user presses "Submit" button.
 
+        if self.game_instance.check_game_status() == -1:  # player has lost the game -> gameover
+            self.gu_left_output.text = "No guesses left!"  # updates guesses left text shown
+            self.error_msg_output.text = "GAME OVER!"
+
+        elif self.game_instance.check_game_status() == 0:  # no win yet!
+            self.game_instance.set_user_guess(gu_input)  # passes user guess input to methods of game_instance
+            self.word_output.text = self.game_instance.get_cur_word()  # updates word shown
+            self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"  # updates guesses left text shown
+            if self.game_instance.get_input_valid_status() is True:
+                pass
+            else:
+                self.error_msg_output.text = self.game_instance.get_input_error_msg()
+
+        else:                        # player has WON!
+            pass
 
 
 
