@@ -41,38 +41,24 @@ class MainSinglegameClass:
 
     def gu_validity_check(self, char_gu, total_used_char, res_dict):
 
-        try:  #
-            char_gu = int(char_gu)  # checks if the user input
-            # print("DIAGNOSTICS: INPUT IS not str")  #is a string or not. This prevents
-            string = False  #
-        except ValueError:  # the user from entering a number
-            # print("DIAGNOSTICS: INPUT IS str")      #
-            string = True  #
+        single = True
+        alpha = True
+        eng = True
+        unique = True
 
-        if string is True:
-            if len(char_gu) > 1:
-                single = False
-            else:
-                single = True
+        if len(char_gu) > 1:
+            single = False
 
-            if char_gu in total_used_char:
-                unique = False
-            else:
-                unique = True
+        if char_gu.isalpha() is False:
+            alpha = False
 
-            if char_gu.isalpha():
-                letter = True
-            else:
-                letter = False
-        else:
-            single = True
-            unique = True
-            letter = True
+        if char_gu in total_used_char:
+            unique = False
 
-        res_dict["string"] = string
         res_dict["single"] = single
+        res_dict["alpha"] = alpha
+        res_dict["eng"] = eng
         res_dict["unique"] = unique
-        res_dict["letter"] = letter
 
         return
 
@@ -87,29 +73,28 @@ class MainSinglegameClass:
 
         self.gu_validity_check(gu_char, self.total_used_char, v_res_dict)
 
-        if v_res_dict["string"] is True and v_res_dict["single"] is True and v_res_dict["unique"] is True  and v_res_dict["letter"] is True:
+        if v_res_dict["single"] is True and v_res_dict["alpha"] is True and v_res_dict["unique"] is True:
             #user guess entry is valid and is accepted by the game
             self.user_gu_accepted = True
+            self.total_used_char.append(gu_char)
         else:
             # user guess entry is INVALID and is rejected by the game
             # appropriate error message should be displayed
             self.input_error_msg = "Error: \n"
-            if v_res_dict["string"] is True:
-                if v_res_dict["single"] is False:
-                    self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
-                if v_res_dict["unique"] is False and v_res_dict["single"] is True:
-                    self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
-                if v_res_dict["letter"] is False:
-                    self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic letter.\n"
-            else:
-                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a character as input.\n"
+            if v_res_dict["single"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
+
+            if v_res_dict["alpha"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic character as input.\n"
+
+            if v_res_dict["unique"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
 
         self.game_state(gu_char)
 
     def game_state(self, gu_char):
 
         match_found = False
-        self.total_used_char.append(gu_char)
 
         for i in range(0, self.target_word_len):
             if self.target_word[i] == gu_char:
