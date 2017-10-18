@@ -90,23 +90,24 @@ class MainSinglegameClass:
             if v_res_dict["unique"] is False:
                 self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
 
-        self.game_state(gu_char)
+        self.game_state(gu_char, self.user_gu_accepted)
 
-    def game_state(self, gu_char):
+    def game_state(self, gu_char, user_gu_accepted):
 
         match_found = False
 
-        for i in range(0, self.target_word_len):
-            if self.target_word[i] == gu_char:
-                match_found = True
-                self.char_found += 1
-                self.word_print[i] = gu_char
+        if user_gu_accepted is True:
+            for i in range(0, self.target_word_len):
+                if self.target_word[i] == gu_char:
+                    match_found = True
+                    self.char_found += 1
+                    self.word_print[i] = gu_char
 
-        if match_found is False:
-            print("\n\nWrong guess!")
-            self.gu_msg = "Wrong guess!"
-            self.wrong_used_char.append(gu_char)
-            self.gu_left = self.gu_left - 1
+            if match_found is False:
+                print("\n\nWrong guess!")
+                self.gu_msg = "Wrong guess!"
+                self.wrong_used_char.append(gu_char)
+                self.gu_left = self.gu_left - 1
 
     def check_game_status(self):
         # returns: -1 for loss, 0 for in progress, 1 for win
