@@ -257,9 +257,9 @@ class SingleplayerGameScreen(Screen):
 
             if self.game_instance.check_game_status() == 1:
                 self.error_msg_output.text = "You have WON!"
-                self.gu_left_output.text = " "
+                self.gu_left_output.text = ""
 
-        self.guess_input.text = " "  #clears guess input after character input from user
+        self.guess_input.text = ""  #clears guess input after character input from user
 
 
 class ScreenManagement(ScreenManager):
