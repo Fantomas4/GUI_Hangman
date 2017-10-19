@@ -96,6 +96,7 @@ ScreenManagement:
     guess_input: gu_input
     word_output: word_display
     gu_left_output: gu_left
+    wrong_used_char_output: wrong_char
     error_msg_output: msg_box
 
     BoxLayout:
@@ -110,6 +111,10 @@ ScreenManagement:
             id: gu_left
             text:
             font_size: 50
+        Label:
+            id: wrong_char
+            text:
+            font_size: 40
         TextInput:
             id: gu_input
         Button:

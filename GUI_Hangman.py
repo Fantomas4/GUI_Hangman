@@ -62,6 +62,9 @@ class MainSinglegameClass:
 
         return
 
+    def get_wrong_used_char(self):
+        return str(self.wrong_used_char)
+
     def set_user_guess(self, gu_char):
         gu_char = gu_char.text # converts input from GUI input to text
         gu_char = gu_char.upper()
@@ -182,6 +185,7 @@ class SingleplayerGameScreen(Screen):
     guess_input = ObjectProperty()
     word_output = ObjectProperty()
     gu_left_output = ObjectProperty()
+    wrong_used_char_output = ObjectProperty()
     game_instance = MainSinglegameClass()
     error_msg_output = ObjectProperty()
 
@@ -210,6 +214,8 @@ class SingleplayerGameScreen(Screen):
         elif self.game_instance.check_game_status() == 0:  # no win yet!
             self.game_instance.set_user_guess(gu_input)  # passes user guess input to methods of game_instance
             self.word_output.text = self.game_instance.get_cur_word()  # updates word shown
+            if self.game_instance.wrong_used_char: #checks if list is empty so as not to print it
+                self.wrong_used_char_output.text = "Wrong guesses: " + self.game_instance.get_wrong_used_char() #updates list of wrong char guesses
             self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"  # updates guesses left text shown
             if self.game_instance.get_input_valid_status() is True:
                 pass
