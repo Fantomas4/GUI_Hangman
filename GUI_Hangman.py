@@ -1,9 +1,12 @@
 #################################################################################################
 ########################## BASE APP PART ########################################################
+
+
 class login_data(object):
 
     users_index = 0
     username = "guest"
+
 
 class MainSinglegameClass:
 
@@ -135,26 +138,59 @@ class WelcomeScreen(Screen):
     pass
 
 
-class LoginScreen(Screen):
-    login_username_text_input = ObjectProperty()
-    login_password_text_input = ObjectProperty()
-    main_menu = ObjectProperty()
+class RegisterScreen(Screen):
+    username_text_input = ObjectProperty()
+    password_text_input = ObjectProperty()
 
-    def login_func(self):
-        username = self.login_username_text_input.text
-        print("DIAG: username is: ", username )
+    users = []
 
-        ### Base App
+    def on_pre_enter(self, *args):  #read users.txt file
         import os
         if os.path.isfile("users.txt"):
             print("USERS FILE EXISTS")
-            with open('users.txt', 'r') as saved_users:
-                users = saved_users.read().splitlines()
-                print("DIAG: Users list initialized from file as: ", users)
+            with open('users.txt', 'r') as users_file:
+                self.users = users_file.read().splitlines()
+                print("DIAG: Users list initialized from file as: ", self.users)
         else:
             print("USERS FILE DOES NOT EXIST.")
 
-        if username in users:
+    def register_user(self):
+
+        if self.username_text_input in self.users:
+            print("$$$ USERNAME ALREADY EXISTS! $$$")
+        else:
+            print("### USER REGISTERED SUCCESSFULLY")
+            self.users.append(self.username_text_input)
+            users_index = len(self.users)
+            with open('users.txt', 'w') as users_file:  ### SAVES USERS TO TEXT FILE!
+                for i in range(0, users_index - 1):
+                    print("DIAG: LOOP TYPOSIS SE ARXEIO")
+                    print("DIAG: users", self.users)
+                    users_file.write(self.users[i])
+                    users_file.write("\n")
+
+class LoginScreen(Screen):
+    username_text_input = ObjectProperty()
+    password_text_input = ObjectProperty()
+    #main_menu = ObjectProperty()
+    users = []
+
+    def on_pre_enter(self, *args):
+        import os
+        if os.path.isfile("users.txt"):
+            print("USERS FILE EXISTS")
+            with open('users.txt', 'r') as users_file:
+                self.users = users_file.read().splitlines()
+                print("DIAG: Users list initialized from file as: ", self.users)
+        else:
+            print("USERS FILE DOES NOT EXIST.")
+
+    def login_func(self):
+        username = self.username_text_input.text
+        print("DIAG: username is: ", username )
+
+        ### Base App
+        if username in self.users:
             print("Diagnostics: USER FOUND!")
             login_data.username = username
             self.manager.current = 'MenuScreen'
@@ -201,8 +237,6 @@ class SingleplayerGameScreen(Screen):
 
     def run_game(self, gu_input):  # gets called when user presses "Submit" button.
 
-
-
         if self.game_instance.check_game_status() == -1:  # player has lost the game -> gameover
             self.gu_left_output.text = "No guesses left!"  # updates guesses left text shown
             self.error_msg_output.text = "GAME OVER!"
@@ -223,6 +257,7 @@ class SingleplayerGameScreen(Screen):
                 self.gu_left_output.text = " "
 
         self.guess_input.text = " "  #clears guess input after character input from user
+
 
 class ScreenManagement(ScreenManager):
     pass

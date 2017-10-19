@@ -8,6 +8,10 @@ ScreenManagement:
         id: welcome_screen
         name: 'WelcomeScreen'
         manager: screen_manager
+    RegisterScreen:
+        id: register_screen
+        name: 'RegisterScreen'
+        manager: screen_manager
     LoginScreen:
         id: login_screen
         name: 'LoginScreen'
@@ -34,14 +38,41 @@ ScreenManagement:
         BoxLayout:
             orientation: 'horizontal'
             Button:
-                font_size: 50
-                text: "Login as user"
+                font_size: 40
+                text: "New user"
+                on_release: app.root.current = 'RegisterScreen'
+            Button:
+                font_size: 40
+                text: "Existing user"
                 on_release: app.root.current = 'LoginScreen'
             Button:
-                font_size: 50
+                font_size: 40
                 text: "Play as guest"
 
+<RegisterScreen>:
+    name: 'register_screen'
+    login_username_text_input: username
+    login_password_text_input: password
 
+    BoxLayout:
+        orientation: "vertical"
+        GridLayout:
+
+            rows: 2
+            cols: 2
+            padding: 10
+            spacing: 10
+            Label:
+                text: "Set username:"
+            TextInput:
+                id: username
+            Label:
+                text: "Set password:"
+            TextInput:
+                id: password
+        Button:
+            text: "Register!"
+            on_release: root.register_user()
 
 
 <LoginScreen>:
@@ -121,8 +152,6 @@ ScreenManagement:
             text: "Submit!"
             id: submit_gu
             on_press: root.run_game(gu_input)
-        Label:
-            id: guess_status
         Label:
             id: msg_box
             text:
