@@ -2,7 +2,7 @@
 ########################## BASE APP PART ########################################################
 
 
-class login_data(object):
+class LoginData(object):
 
     users_index = 0
     username = "guest"
@@ -155,19 +155,22 @@ class RegisterScreen(Screen):
             print("USERS FILE DOES NOT EXIST.")
 
     def register_user(self):
-
+        print("DIAG: self.users: ",self.users)
         if self.username_text_input in self.users:
             print("$$$ USERNAME ALREADY EXISTS! $$$")
         else:
             print("### USER REGISTERED SUCCESSFULLY")
-            self.users.append(self.username_text_input)
+            self.users.append(self.username_text_input.text)
+            print(" 1-> users is: ",self.users)
             users_index = len(self.users)
+            print("DIAG: User_index is: ", len(self.users))
             with open('users.txt', 'w') as users_file:  ### SAVES USERS TO TEXT FILE!
-                for i in range(0, users_index - 1):
+                for i in range(0, users_index):
                     print("DIAG: LOOP TYPOSIS SE ARXEIO")
                     print("DIAG: users", self.users)
                     users_file.write(self.users[i])
                     users_file.write("\n")
+
 
 class LoginScreen(Screen):
     username_text_input = ObjectProperty()
@@ -192,7 +195,7 @@ class LoginScreen(Screen):
         ### Base App
         if username in self.users:
             print("Diagnostics: USER FOUND!")
-            login_data.username = username
+            LoginData.username = username
             self.manager.current = 'MenuScreen'
         else:
             print("Diagnostics: USER NOT FOUND!")
@@ -205,7 +208,7 @@ class MenuScreen(Screen):
         self.change_button1_text()
 
     def change_button1_text(self):
-        self.ids.menu_option1.text = "Start a new singleplayer game as " + login_data.username
+        self.ids.menu_option1.text = "Start a new singleplayer game as " + LoginData.username
 
 
 class SingleplayerGameScreen(Screen):

@@ -51,8 +51,8 @@ ScreenManagement:
 
 <RegisterScreen>:
     name: 'register_screen'
-    login_username_text_input: username
-    login_password_text_input: password
+    username_text_input: username
+    password_text_input: password
 
     BoxLayout:
         orientation: "vertical"
@@ -77,8 +77,8 @@ ScreenManagement:
 
 <LoginScreen>:
     name: 'login_screen'
-    login_username_text_input: username
-    login_password_text_input: password
+    username_text_input: username
+    password_text_input: password
 
 
     BoxLayout:
@@ -154,6 +154,7 @@ ScreenManagement:
             on_press: root.run_game(gu_input)
         Label:
             id: msg_box
+            font_size: 50
             text:
 
 
