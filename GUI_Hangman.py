@@ -122,8 +122,7 @@ class MainSinglegameClass:
             return 1
 
 
-
-    ############################ GUI PART ##########################################################
+############################ GUI PART ##########################################################
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
@@ -132,10 +131,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 
 
-
-
 class WelcomeScreen(Screen):
     pass
+
 
 class LoginScreen(Screen):
     login_username_text_input = ObjectProperty()
@@ -203,6 +201,8 @@ class SingleplayerGameScreen(Screen):
 
     def run_game(self, gu_input):  # gets called when user presses "Submit" button.
 
+
+
         if self.game_instance.check_game_status() == -1:  # player has lost the game -> gameover
             self.gu_left_output.text = "No guesses left!"  # updates guesses left text shown
             self.error_msg_output.text = "GAME OVER!"
@@ -222,19 +222,17 @@ class SingleplayerGameScreen(Screen):
                 self.error_msg_output.text = "You have WON!"
                 self.gu_left_output.text = " "
 
-
-
+        self.guess_input.text = " "  #clears guess input after character input from user
 
 class ScreenManagement(ScreenManager):
     pass
 
 presentation = Builder.load_file("main.kv")
 
+
 class MainApp(App):
     def build(self):
         return presentation
-
-
 
 
 if __name__ == "__main__":
