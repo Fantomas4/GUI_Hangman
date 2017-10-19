@@ -120,10 +120,6 @@ class MainSinglegameClass:
 
 
 
-
-
-
-
     ############################ GUI PART ##########################################################
 from kivy.app import App
 from kivy.lang import Builder
@@ -216,8 +212,10 @@ class SingleplayerGameScreen(Screen):
             else:
                 self.error_msg_output.text = self.game_instance.get_input_error_msg()
 
-        else:                        # player has WON!
-            pass
+            if self.game_instance.check_game_status() == 1:
+                self.error_msg_output.text = "You have WON!"
+                self.gu_left_output.text = " "
+
 
 
 
