@@ -129,8 +129,6 @@ class MainSinglegameClass:
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
-#from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 
 
