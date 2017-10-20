@@ -22,6 +22,7 @@ class MainSinglegameClass:
     input_error_msg = None # errors from gu_validity_check for user char input, if there are any
 
     def set_target_word(self, target_word):
+        self.word_print = []
         self.target_word = target_word
         self.target_word = target_word
         self.target_word_len = len(target_word)
@@ -29,6 +30,17 @@ class MainSinglegameClass:
 
         for i in range(0, self.target_word_len):
             self.word_print.append("_")
+
+    def reset_gu_left(self):
+        self.gu_left = 6
+
+    def reset_used_char(self):
+        self.wrong_used_char = []
+        self.total_used_char = []
+
+    def reset_game(self):
+        self.reset_gu_left()
+        self.reset_used_char()
 
     def get_cur_word(self):   #get current word (example A _ B _ _)
         return ''.join(self.word_print) # returns the word_print array in string form
@@ -248,10 +260,11 @@ class SingleplayerGameScreen(Screen):
             self.error_msg_output.text = "GAME OVER!"
 
         elif self.game_instance.check_game_status() == 0:  # no win yet!
+            print(" MPIKA MPIKA MPIKA MPIKA !!!!!@@#")
             self.game_instance.set_user_guess(gu_input)  # passes user guess input to methods of game_instance
             self.word_output.text = self.game_instance.get_cur_word()  # updates word shown
             if self.game_instance.wrong_used_char: #checks if list is empty so as not to print it
-                self.wrong_used_char_output.text = "Wrong guesses: " + self.game_instance.get_wrong_used_char() #updates list of wrong char guesses
+                self.wrong_used_char_output.text = "Wrong guesses: " + self.game_instance.get_wrong_used_char() #updates GUI list of wrong char guesses
             self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"  # updates guesses left text shown
             if self.game_instance.get_input_valid_status() is True:
                 pass
@@ -262,7 +275,11 @@ class SingleplayerGameScreen(Screen):
                 self.error_msg_output.text = "You have WON!"
                 self.gu_left_output.text = ""
 
-        self.guess_input.text = ""  #clears guess input after character input from user
+        self.guess_input.text = ""  # clears guess input after character input from user
+
+    def on_leave(self, *args):
+        self.game_instance.reset_game()
+        self.wrong_used_char_output.text = ""
 
 
 class ScreenManagement(ScreenManager):
