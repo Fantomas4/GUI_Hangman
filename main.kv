@@ -82,7 +82,7 @@ ScreenManagement:
             font_size: 35
             on_release: root.register_user()
         Button:
-            text: "<-- Back"
+            text: "Return to Welcome Screen"
             font_size: 35
             on_release: app.root.current = 'WelcomeScreen'
 
@@ -121,7 +121,7 @@ ScreenManagement:
             font_size: 35
             on_release: root.login_func()
         Button:
-            text: "<-- Back"
+            text: "Return to Welcome Screen"
             font_size: 35
             on_release: app.root.current = 'WelcomeScreen'
 
@@ -144,6 +144,10 @@ ScreenManagement:
         Button:
             font_size: 25
             text: "Join a multiplayer session (ALPHA!)"
+        Button:
+            font_size: 25
+            text: "Return to Welcome Screen"
+            on_release: app.root.current = "WelcomeScreen"
 
 
 <SingleplayerGameScreen>:
