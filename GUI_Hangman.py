@@ -156,7 +156,7 @@ class RegisterScreen(Screen):
             print("USERS FILE DOES NOT EXIST.")
 
     def register_user(self):
-        print("DIAG: self.users: ",self.users)
+        print("DIAG: self.users: ", self.users)
         if self.username_text_input.text in self.users:
             print("$$$ USERNAME ALREADY EXISTS! $$$")
             self.user_error_msg.text = "Error: Username already exists!"
@@ -177,7 +177,7 @@ class RegisterScreen(Screen):
 class LoginScreen(Screen):
     username_text_input = ObjectProperty()
     password_text_input = ObjectProperty()
-    #main_menu = ObjectProperty()
+    user_error_msg = ObjectProperty()
     users = []
 
     def on_pre_enter(self, *args):
@@ -201,6 +201,7 @@ class LoginScreen(Screen):
             self.manager.current = 'MenuScreen'
         else:
             print("Diagnostics: USER NOT FOUND!")
+            self.user_error_msg.text = "Error: User does not exist!"
         ###
 
 

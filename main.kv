@@ -69,8 +69,8 @@ ScreenManagement:
                 id: username
             Label:
                 text: "Set password:"
-            TextInput:
-                id: password
+        TextInput:
+            id: password
         Label:
             id: usr_error_msg
             text:
@@ -87,6 +87,7 @@ ScreenManagement:
     name: 'login_screen'
     username_text_input: username
     password_text_input: password
+    user_error_msg: usr_error_msg
 
 
     BoxLayout:
@@ -105,6 +106,9 @@ ScreenManagement:
                 text: "Password:"
             TextInput:
                 id: password
+        Label:
+            id: usr_error_msg
+            text:
         Button:
             text: "Enter!"
             font_size: 40
