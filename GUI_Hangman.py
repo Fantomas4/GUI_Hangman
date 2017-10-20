@@ -163,7 +163,8 @@ class RegisterScreen(Screen):
         else:
             print("### USER REGISTERED SUCCESSFULLY")
             self.users.append(self.username_text_input.text)
-            print(" 1-> users is: ",self.users)
+            LoginData.username = self.username_text_input.text
+            print(" 1-> users is: ", self.users)
             users_index = len(self.users)
             print("DIAG: User_index is: ", len(self.users))
             with open('users.txt', 'w') as users_file:  ### SAVES USERS TO TEXT FILE!
@@ -172,6 +173,7 @@ class RegisterScreen(Screen):
                     print("DIAG: users", self.users)
                     users_file.write(self.users[i])
                     users_file.write("\n")
+            self.manager.current = 'MenuScreen'
 
 
 class LoginScreen(Screen):
