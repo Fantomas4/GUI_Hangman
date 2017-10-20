@@ -141,6 +141,7 @@ class WelcomeScreen(Screen):
 class RegisterScreen(Screen):
     username_text_input = ObjectProperty()
     password_text_input = ObjectProperty()
+    user_error_msg = ObjectProperty()
 
     users = []
 
@@ -156,8 +157,9 @@ class RegisterScreen(Screen):
 
     def register_user(self):
         print("DIAG: self.users: ",self.users)
-        if self.username_text_input in self.users:
+        if self.username_text_input.text in self.users:
             print("$$$ USERNAME ALREADY EXISTS! $$$")
+            self.user_error_msg.text = "Error: Username already exists!"
         else:
             print("### USER REGISTERED SUCCESSFULLY")
             self.users.append(self.username_text_input.text)

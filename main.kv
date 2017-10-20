@@ -53,6 +53,7 @@ ScreenManagement:
     name: 'register_screen'
     username_text_input: username
     password_text_input: password
+    user_error_msg: usr_error_msg
 
     BoxLayout:
         orientation: "vertical"
@@ -70,9 +71,16 @@ ScreenManagement:
                 text: "Set password:"
             TextInput:
                 id: password
+        Label:
+            id: usr_error_msg
+            text:
         Button:
             text: "Register!"
             on_release: root.register_user()
+        Button:
+            text: "<-- Back"
+            font_size: 40
+            on_release: app.root.current = 'WelcomeScreen'
 
 
 <LoginScreen>:
@@ -99,7 +107,12 @@ ScreenManagement:
                 id: password
         Button:
             text: "Enter!"
+            font_size: 40
             on_release: root.login_func()
+        Button:
+            text: "<-- Back"
+            font_size: 40
+            on_release: app.root.current = 'WelcomeScreen'
 
 
 <MenuScreen>:
