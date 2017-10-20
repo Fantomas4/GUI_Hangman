@@ -64,22 +64,26 @@ ScreenManagement:
             padding: 10
             spacing: 10
             Label:
+                font_size: 35
                 text: "Set username:"
             TextInput:
                 id: username
             Label:
+                font_size: 35
                 text: "Set password:"
-        TextInput:
-            id: password
+            TextInput:
+                id: password
         Label:
             id: usr_error_msg
+            font_size: 30
             text:
         Button:
             text: "Register!"
+            font_size: 35
             on_release: root.register_user()
         Button:
             text: "<-- Back"
-            font_size: 40
+            font_size: 35
             on_release: app.root.current = 'WelcomeScreen'
 
 
@@ -99,23 +103,26 @@ ScreenManagement:
             padding: 10
             spacing: 10
             Label:
+                font_size: 35
                 text: "User name:"
             TextInput:
                 id: username
             Label:
+                font_size: 35
                 text: "Password:"
             TextInput:
                 id: password
         Label:
             id: usr_error_msg
+            font_size: 30
             text:
         Button:
             text: "Enter!"
-            font_size: 40
+            font_size: 35
             on_release: root.login_func()
         Button:
             text: "<-- Back"
-            font_size: 40
+            font_size: 35
             on_release: app.root.current = 'WelcomeScreen'
 
 
