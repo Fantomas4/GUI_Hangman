@@ -257,7 +257,7 @@ class SingleplayerGameScreen(Screen):
 
         if self.game_instance.check_game_status() == -1:  # player has lost the game -> gameover
             self.gu_left_output.text = "No guesses left!"  # updates guesses left text shown
-            self.error_msg_output.text = "GAME OVER!"
+            self.error_msg_output.text = "GAME OVER! " + "The word was: " + self.target_word
 
         elif self.game_instance.check_game_status() == 0:  # no win yet!
             print(" MPIKA MPIKA MPIKA MPIKA !!!!!@@#")
@@ -280,6 +280,7 @@ class SingleplayerGameScreen(Screen):
     def on_leave(self, *args):
         self.game_instance.reset_game()
         self.wrong_used_char_output.text = ""
+        self.error_msg_output = ""
 
 
 class ScreenManagement(ScreenManager):
