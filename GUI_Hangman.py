@@ -19,7 +19,7 @@ class MainSinglegameClass:
     gu_left = 6
     match_found = False
     user_gu_accepted = False
-    input_error_msg = None # errors from gu_validity_check for user char input, if there are any
+    input_error_msg = "" # errors from gu_validity_check for user char input, if there are any
 
     def set_target_word(self, target_word):
         self.word_print = []
@@ -31,6 +31,9 @@ class MainSinglegameClass:
         for i in range(0, self.target_word_len):
             self.word_print.append("_")
 
+    def reset_input_error_msg(self):
+        self.input_error_msg = ""
+
     def reset_gu_left(self):
         self.gu_left = 6
 
@@ -41,6 +44,7 @@ class MainSinglegameClass:
     def reset_game(self):
         self.reset_gu_left()
         self.reset_used_char()
+        self.reset_input_error_msg()
 
     def get_cur_word(self):   #get current word (example A _ B _ _)
         return ''.join(self.word_print) # returns the word_print array in string form
@@ -280,7 +284,7 @@ class SingleplayerGameScreen(Screen):
     def on_leave(self, *args):
         self.game_instance.reset_game()
         self.wrong_used_char_output.text = ""
-        self.error_msg_output = ""
+        self.error_msg_output.text = ""
 
 
 class ScreenManagement(ScreenManager):
