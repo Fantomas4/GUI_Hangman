@@ -27,7 +27,7 @@ class MainSinglegameClass:
         print("MPIKA set_target_word function!!!!!!!")
 
         for i in range(0, self.target_word_len):
-            self.word_print.append("_")
+            self.word_print.append("_ ") # adds _ with space to hidden word.
 
     def reset_input_error_msg(self):
         self.input_error_msg = ""
