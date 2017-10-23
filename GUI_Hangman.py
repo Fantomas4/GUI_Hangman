@@ -3,8 +3,6 @@
 
 
 class LoginData(object):
-
-    users_index = 0
     username = "guest"
 
 
@@ -149,7 +147,10 @@ from kivy.properties import ObjectProperty
 
 
 class WelcomeScreen(Screen):
-    pass
+
+    def guest_login(self):
+        LoginData.username = "Guest"
+        self.manager.current = "MenuScreen"
 
 
 class RegisterScreen(Screen):
