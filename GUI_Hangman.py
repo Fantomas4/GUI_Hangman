@@ -272,10 +272,9 @@ class MainMultigameClass:
         elif self.char_found == self.target_word_len and self.gu_left > 0:
             return 1
 
-    def server_host_win_check(self):
-
-
     def initialize_server(self):
+
+        import sys
 
         # first a random word is picked from the word txt file.
         with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
@@ -284,6 +283,59 @@ class MainMultigameClass:
         import random
         self.target_word = random.choice(word_list)
         print("diag: target_word is: ", self.target_word)
+
+        import random
+        self.target_word = random.choice(word_list)
+
+        used_id = []
+
+        import socket
+
+
+        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
+        PORT = 9999
+
+        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listen_socket.bind(('', PORT))
+        listen_socket.listen(5)
+        print('Serving HTTP on port %s ...' % PORT, file=sys.stderr)
+
+        while True:
+            client_connection, client_address = listen_socket.accept()
+            print("Got a connection from %s" % str(client_address), file=sys.stderr)
+            request = client_connection.recv(1024)
+            # print("Server got the request: ",request.decode('ascii'),file=sys.stderr)
+
+            # receive and DECODE array through socket!
+            import pickle  # serialize array that will be send over socket
+            com_array = pickle.loads(request)  # serialize array that will be send over socket
+
+            if com_array[0] == "join_request":
+                import random
+                unique_id = random.randrange(0,5000)
+                while unique_id in used_id:
+                    unique_id = random.randrange(0, 5000)
+                used_id.append(unique_id)
+
+                import pickle
+                com_array = []
+                com_array.append(unique_id)
+                client_connection.send(pickle.dumps(com_array))
+
+            elif com_array[0] == "word_request":
+                print("DIAG: Server shares word with client!",file=sys.stderr)
+                print("DIAG: SERVER WORD: ", self.target_word, file=sys.stderr)
+                ##SENDING "word_request" MESSAGE TO SERVER USING ARRAY!
+                import pickle
+                com_array = []
+                com_array.append(self.target_word)
+                client_connection.send(pickle.dumps(com_array))
+                # client_connection.close()
+
+
+
+
 
 
 
