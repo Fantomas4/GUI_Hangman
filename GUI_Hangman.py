@@ -137,6 +137,217 @@ class MainSinglegameClass:
             return 0
         elif self.char_found == self.target_word_len and self.gu_left > 0:
             return 1
+#############################################################################################
+
+
+class MainMultigameClass:
+
+    target_word = None
+    target_word_len = None
+    char_found = 0
+    word_print = []
+    wrong_used_char = []
+    total_used_char = []
+    gu_left = 6
+    match_found = False
+    user_gu_accepted = False
+    input_error_msg = "" # errors from gu_validity_check for user char input, if there are any
+
+    def set_target_word(self, target_word):
+        self.word_print = []
+        self.target_word = target_word
+        self.target_word = target_word
+        self.target_word_len = len(target_word)
+        print("MPIKA set_target_word function!!!!!!!")
+
+        for i in range(0, self.target_word_len):
+            self.word_print.append("_ ") # adds _ with space to hidden word.
+
+    def reset_input_error_msg(self):
+        self.input_error_msg = ""
+
+    def reset_gu_left(self):
+        self.gu_left = 6
+
+    def reset_used_char(self):
+        self.wrong_used_char = []
+        self.total_used_char = []
+
+    def reset_game(self):
+        self.reset_gu_left()
+        self.reset_used_char()
+        self.reset_input_error_msg()
+
+    def get_cur_word(self):   #get current word (example A _ B _ _)
+        return ''.join(self.word_print) # returns the word_print array in string form
+
+    def get_input_error_msg(self):
+        return self.input_error_msg
+
+    def get_input_valid_status(self):
+        return self.user_gu_accepted
+
+    def get_gu_left(self):
+        return str(self.gu_left) #returns gu_left converting it from int to string
+
+    def gu_validity_check(self, char_gu, total_used_char, res_dict):
+
+        single = True
+        alpha = True
+        eng = True
+        unique = True
+
+        if len(char_gu) > 1:
+            single = False
+
+        if char_gu.isalpha() is False:
+            alpha = False
+
+        if char_gu in total_used_char:
+            unique = False
+
+        res_dict["single"] = single
+        res_dict["alpha"] = alpha
+        res_dict["eng"] = eng
+        res_dict["unique"] = unique
+
+        return
+
+    def get_wrong_used_char(self):
+        return str(self.wrong_used_char)
+
+    def set_user_guess(self, gu_char):
+        gu_char = gu_char.text # converts input from GUI input to text
+        gu_char = gu_char.upper()
+        print("get_user_guess got from GUI: ",gu_char)
+
+        self.user_gu_accepted = False #reset class fields
+        self.input_error_msg = None      #reset class fields
+        v_res_dict = {}               #validity_result_dictionary
+
+        self.gu_validity_check(gu_char, self.total_used_char, v_res_dict)
+
+        if v_res_dict["single"] is True and v_res_dict["alpha"] is True and v_res_dict["unique"] is True:
+            #user guess entry is valid and is accepted by the game
+            self.user_gu_accepted = True
+            self.total_used_char.append(gu_char)
+        else:
+            # user guess entry is INVALID and is rejected by the game
+            # appropriate error message should be displayed
+            self.input_error_msg = "Error: \n"
+            if v_res_dict["single"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter a single character as input.\n"
+
+            if v_res_dict["alpha"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! Please enter an alphabetic character as input.\n"
+
+            if v_res_dict["unique"] is False:
+                self.input_error_msg = self.input_error_msg + "Wrong entry! You have entered this character during a previous guess.\n"
+
+        self.game_state(gu_char, self.user_gu_accepted)
+
+    def game_state(self, gu_char, user_gu_accepted):
+
+        match_found = False
+
+        if user_gu_accepted is True:
+            for i in range(0, self.target_word_len):
+                if self.target_word[i] == gu_char:
+                    match_found = True
+                    self.char_found += 1
+                    self.word_print[i] = gu_char
+
+            if match_found is False:
+                print("\n\nWrong guess!")
+                self.gu_msg = "Wrong guess!"
+                self.wrong_used_char.append(gu_char)
+                self.gu_left = self.gu_left - 1
+
+    def check_game_status(self):
+        # returns: -1 for loss, 0 for in progress, 1 for win
+        if self.gu_left <= 1:
+            return -1
+        elif self.char_found < self.target_word_len:
+            return 0
+        elif self.char_found == self.target_word_len and self.gu_left > 0:
+            return 1
+
+    def server_host_win_check(self):
+
+        import socket
+        import sys
+
+        win_status = False  # no client has won yet
+
+        HOST = socket.gethostname()
+        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
+        PORT = 9998
+
+        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listen_socket.bind((HOST, PORT))
+        listen_socket.listen(5)
+        print('Serving WIN HTTP on port %s ...' % PORT, file=sys.stderr)
+
+        while True:
+            client_connection, client_address = listen_socket.accept()
+            print("WIN_SERVER got a WIN connection from %s" % str(client_address), file=sys.stderr)
+            request = client_connection.recv(1024)
+            request = request.decode('ascii')
+            print("Server got the WIN request: ", request, file=sys.stderr)
+            if request == "win_status":
+                if win_status == True:
+                    client_connection.send("end_game".encode('ascii'))
+                elif win_status == False:
+                    client_connection.send("pending_game".encode('ascii'))
+            elif request == "win":
+                win_status = True
+
+    def initialize_server(self):
+
+        # first a random word is picked from the word txt file.
+        with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
+            word_list = dictionary.read().upper().splitlines()
+            print('diag: word_list is: ', word_list)
+        import random
+        self.target_word = random.choice(word_list)
+        print("diag: target_word is: ", self.target_word)
+
+        # thread gia server_win_check_func
+        from threading import Thread
+
+        server_thread = Thread(target=self.server_host_win_check_)
+        server_thread.start()
+
+        import socket
+        import sys
+
+
+        HOST = socket.gethostname()
+        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
+        PORT = 9999
+
+        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listen_socket.bind((HOST, PORT))
+        listen_socket.listen(5)
+        print('Serving HTTP on port %s ...' % PORT, file=sys.stderr)
+
+
+        while True:
+            client_connection, client_address = listen_socket.accept()
+            print("Got a connection from %s" % str(client_address), file=sys.stderr)
+            request = client_connection.recv(1024)
+            print("Server got the request: ", request.decode('ascii'), file=sys.stderr)
+
+            if request.decode('ascii') == "word":
+                print("DIAG: Server shares word with client!", file=sys.stderr)
+
+                print("DIAG: SERVER WORD: ", self.target_word, file=sys.stderr)
+                client_connection.send(self.target_word.encode("ascii"))
+
+
+
 
 
 ############################ GUI PART ##########################################################
@@ -270,6 +481,56 @@ class SingleplayerGameScreen(Screen):
             self.word_output.text = self.game_instance.get_cur_word()  # updates word shown
             if self.game_instance.wrong_used_char: #checks if list is empty so as not to print it
                 self.wrong_used_char_output.text = "Wrong guesses: " + self.game_instance.get_wrong_used_char() #updates GUI list of wrong char guesses
+            self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"  # updates guesses left text shown
+            if self.game_instance.get_input_valid_status() is True:
+                pass
+            else:
+                self.error_msg_output.text = self.game_instance.get_input_error_msg()
+
+            if self.game_instance.check_game_status() == 1:
+                self.error_msg_output.text = "You have WON!"
+                self.gu_left_output.text = ""
+
+        self.guess_input.text = ""  # clears guess input after character input from user
+
+    def on_leave(self, *args):
+        self.game_instance.reset_game()
+        self.wrong_used_char_output.text = ""
+        self.error_msg_output.text = ""
+
+
+class MultiplayerGameScreen(Screen):
+    word_list = []
+    target_word = None
+    # word_print = None
+    guess_input = ObjectProperty()
+    word_output = ObjectProperty()
+    gu_left_output = ObjectProperty()
+    wrong_used_char_output = ObjectProperty()
+    game_instance = MainSinglegameClass()
+    error_msg_output = ObjectProperty()
+
+    def on_pre_enter(self, *args):
+        pass
+
+        # then a server thread is initialized
+
+
+    def on_enter(self, *args):
+        pass
+
+    def run_game(self, gu_input):  # gets called when user presses "Submit" button.
+
+        if self.game_instance.check_game_status() == -1:  # player has lost the game -> gameover
+            self.gu_left_output.text = "No guesses left!"  # updates guesses left text shown
+            self.error_msg_output.text = "GAME OVER! " + "The word was: " + self.target_word
+
+        elif self.game_instance.check_game_status() == 0:  # no win yet!
+            print(" MPIKA MPIKA MPIKA MPIKA !!!!!@@#")
+            self.game_instance.set_user_guess(gu_input)  # passes user guess input to methods of game_instance
+            self.word_output.text = self.game_instance.get_cur_word()  # updates word shown
+            if self.game_instance.wrong_used_char:  # checks if list is empty so as not to print it
+                self.wrong_used_char_output.text = "Wrong guesses: " + self.game_instance.get_wrong_used_char()  # updates GUI list of wrong char guesses
             self.gu_left_output.text = "You have " + self.game_instance.get_gu_left() + " guesses left"  # updates guesses left text shown
             if self.game_instance.get_input_valid_status() is True:
                 pass
