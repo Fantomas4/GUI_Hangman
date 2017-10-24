@@ -274,34 +274,6 @@ class MainMultigameClass:
 
     def server_host_win_check(self):
 
-        import socket
-        import sys
-
-        win_status = False  # no client has won yet
-
-        HOST = socket.gethostname()
-        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
-        PORT = 9998
-
-        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listen_socket.bind((HOST, PORT))
-        listen_socket.listen(5)
-        print('Serving WIN HTTP on port %s ...' % PORT, file=sys.stderr)
-
-        while True:
-            client_connection, client_address = listen_socket.accept()
-            print("WIN_SERVER got a WIN connection from %s" % str(client_address), file=sys.stderr)
-            request = client_connection.recv(1024)
-            request = request.decode('ascii')
-            print("Server got the WIN request: ", request, file=sys.stderr)
-            if request == "win_status":
-                if win_status == True:
-                    client_connection.send("end_game".encode('ascii'))
-                elif win_status == False:
-                    client_connection.send("pending_game".encode('ascii'))
-            elif request == "win":
-                win_status = True
 
     def initialize_server(self):
 
@@ -313,38 +285,6 @@ class MainMultigameClass:
         self.target_word = random.choice(word_list)
         print("diag: target_word is: ", self.target_word)
 
-        # thread gia server_win_check_func
-        from threading import Thread
-
-        server_thread = Thread(target=self.server_host_win_check_)
-        server_thread.start()
-
-        import socket
-        import sys
-
-
-        HOST = socket.gethostname()
-        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
-        PORT = 9999
-
-        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listen_socket.bind((HOST, PORT))
-        listen_socket.listen(5)
-        print('Serving HTTP on port %s ...' % PORT, file=sys.stderr)
-
-
-        while True:
-            client_connection, client_address = listen_socket.accept()
-            print("Got a connection from %s" % str(client_address), file=sys.stderr)
-            request = client_connection.recv(1024)
-            print("Server got the request: ", request.decode('ascii'), file=sys.stderr)
-
-            if request.decode('ascii') == "word":
-                print("DIAG: Server shares word with client!", file=sys.stderr)
-
-                print("DIAG: SERVER WORD: ", self.target_word, file=sys.stderr)
-                client_connection.send(self.target_word.encode("ascii"))
 
 
 
