@@ -19,6 +19,9 @@ class MainSinglegameClass:
     user_gu_accepted = False
     input_error_msg = "" # errors from gu_validity_check for user char input, if there are any
 
+    winner_username = ""
+    winner_id = None
+
     def set_target_word(self, target_word):
         self.word_print = []
         self.target_word = target_word
@@ -152,6 +155,9 @@ class MainMultigameClass:
     match_found = False
     user_gu_accepted = False
     input_error_msg = "" # errors from gu_validity_check for user char input, if there are any
+
+    winner_username = None
+    winner_id = None
 
     def set_target_word(self, target_word):
         self.word_print = []
@@ -288,6 +294,7 @@ class MainMultigameClass:
         self.target_word = random.choice(word_list)
 
         used_id = []
+        win_status = False  # no client has won yet
 
         import socket
 
@@ -333,6 +340,33 @@ class MainMultigameClass:
                 client_connection.send(pickle.dumps(com_array))
                 # client_connection.close()
 
+            elif com_array[0] == "win_status":
+                if win_status is True:
+                    # out_request = "end_game"
+
+                    import pickle
+                    com_array = []  # empties array?
+                    com_array.append("end_game")
+                    com_array.append(self.winner_username)
+                    com_array.append(self.winner_id)
+                    client_connection.send(pickle.dumps(com_array))
+
+                elif win_status is False:
+                    out_request = "pending_game"
+
+                    import pickle
+                    com_array = []  # empties array?
+                    com_array.append(out_request)
+                    client_connection.send(pickle.dumps(com_array))
+
+            elif com_array[0] == "win":
+                win_status = True
+                self.winner_username = com_array[1]
+                self.winner_id = com_array[2]
+                print(" Server_win_check received winner: ", self.winner_username, self.winner_id)
+                ## edw prepei na stelnei se oloys toys client ton nikiti
+                listen_socket.close()
+                break
 
 
 
