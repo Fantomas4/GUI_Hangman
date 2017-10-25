@@ -143,6 +143,101 @@ class MainSinglegameClass:
 #############################################################################################
 
 
+class ServerGameHostClass:
+    winner_username = None
+    winner_id = None
+
+    def initialize_server(self):
+
+        import sys
+
+        # first a random word is picked from the word txt file.
+        with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
+            word_list = dictionary.read().upper().splitlines()
+            print('diag: word_list is: ', word_list)
+        import random
+        self.target_word = random.choice(word_list)
+        print("diag: target_word is: ", self.target_word)
+
+        import random
+        self.target_word = random.choice(word_list)
+
+        used_id = []
+        win_status = False  # no client has won yet
+
+        import socket
+
+
+        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
+        PORT = 9999
+
+        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listen_socket.bind(('', PORT))
+        listen_socket.listen(5)
+        print('Serving HTTP on port %s ...' % PORT, file=sys.stderr)
+
+        while True:
+            client_connection, client_address = listen_socket.accept()
+            print("Got a connection from %s" % str(client_address), file=sys.stderr)
+            request = client_connection.recv(1024)
+            # print("Server got the request: ",request.decode('ascii'),file=sys.stderr)
+
+            # receive and DECODE array through socket!
+            import pickle  # serialize array that will be send over socket
+            com_array = pickle.loads(request)  # serialize array that will be send over socket
+
+            if com_array[0] == "join_request":
+                import random
+                unique_id = random.randrange(0,5000)
+                while unique_id in used_id:
+                    unique_id = random.randrange(0, 5000)
+                used_id.append(unique_id)
+
+                import pickle
+                com_array = []
+                com_array.append(unique_id)
+                client_connection.send(pickle.dumps(com_array))
+
+            elif com_array[0] == "word_request":
+                print("DIAG: Server shares word with client!",file=sys.stderr)
+                print("DIAG: SERVER WORD: ", self.target_word, file=sys.stderr)
+                ##SENDING "word_request" MESSAGE TO SERVER USING ARRAY!
+                import pickle
+                com_array = []
+                com_array.append(self.target_word)
+                client_connection.send(pickle.dumps(com_array))
+                # client_connection.close()
+
+            elif com_array[0] == "win_status":
+                if win_status is True:
+                    # out_request = "end_game"
+
+                    import pickle
+                    com_array = []  # empties array?
+                    com_array.append("end_game")
+                    com_array.append(self.winner_username)
+                    com_array.append(self.winner_id)
+                    client_connection.send(pickle.dumps(com_array))
+
+                elif win_status is False:
+                    out_request = "pending_game"
+
+                    import pickle
+                    com_array = []  # empties array?
+                    com_array.append(out_request)
+                    client_connection.send(pickle.dumps(com_array))
+
+            elif com_array[0] == "win":
+                win_status = True
+                self.winner_username = com_array[1]
+                self.winner_id = com_array[2]
+                print(" Server_win_check received winner: ", self.winner_username, self.winner_id)
+                ## edw prepei na stelnei se oloys toys client ton nikiti
+                listen_socket.close()
+                break
+
+
 class MainMultigameClass:
 
     target_word = None
@@ -154,10 +249,9 @@ class MainMultigameClass:
     gu_left = 6
     match_found = False
     user_gu_accepted = False
-    input_error_msg = "" # errors from gu_validity_check for user char input, if there are any
+    input_error_msg = ""  # errors from gu_validity_check for user char input, if there are any
 
-    winner_username = None
-    winner_id = None
+    unique_id = None  # client id given by server
 
     def set_target_word(self, target_word):
         self.word_print = []
@@ -277,97 +371,87 @@ class MainMultigameClass:
             return 0
         elif self.char_found == self.target_word_len and self.gu_left > 0:
             return 1
+###############################################################################
 
-    def initialize_server(self):
+    def client_win_check_func(self):
 
-        import sys
-
-        # first a random word is picked from the word txt file.
-        with open("1.txt", 'r') as dictionary:  # settings[1] contains the file name (name.txt)
-            word_list = dictionary.read().upper().splitlines()
-            print('diag: word_list is: ', word_list)
-        import random
-        self.target_word = random.choice(word_list)
-        print("diag: target_word is: ", self.target_word)
-
-        import random
-        self.target_word = random.choice(word_list)
-
-        used_id = []
-        win_status = False  # no client has won yet
+        com_array = []
 
         import socket
+        # create a socket object
 
+        win_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # get local machine name
+        host = socket.gethostname()
+        port = 9999
+        # connection to hostname on the port.
+        win_socket.connect((host, port))
 
-        print("DIAG: gethostname(): ", socket.gethostname(), file=sys.stderr)
-        PORT = 9999
+        ##SENDING "win_status" MESSAGE TO SERVER USING ARRAY!
+        import pickle
+        send_msg = "win_status"
+        com_array.append(send_msg)
+        win_socket.send(pickle.dumps(com_array))
 
-        listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listen_socket.bind(('', PORT))
-        listen_socket.listen(5)
-        print('Serving HTTP on port %s ...' % PORT, file=sys.stderr)
+        received_msg = win_socket.recv(1024)
+        # receive and DECODE array through socket!
+        import pickle
+        com_array = pickle.loads(received_msg)
 
-        while True:
-            client_connection, client_address = listen_socket.accept()
-            print("Got a connection from %s" % str(client_address), file=sys.stderr)
-            request = client_connection.recv(1024)
-            # print("Server got the request: ",request.decode('ascii'),file=sys.stderr)
+        # print("Client got answer from server: ", received_msg,file=sys.stderr)
+        print("Client got answer from server using array: ", com_array[0])
 
-            # receive and DECODE array through socket!
-            import pickle  # serialize array that will be send over socket
-            com_array = pickle.loads(request)  # serialize array that will be send over socket
+        win_socket.close()
 
-            if com_array[0] == "join_request":
-                import random
-                unique_id = random.randrange(0,5000)
-                while unique_id in used_id:
-                    unique_id = random.randrange(0, 5000)
-                used_id.append(unique_id)
+        return com_array
 
-                import pickle
-                com_array = []
-                com_array.append(unique_id)
-                client_connection.send(pickle.dumps(com_array))
+    def initialize_client(self):
+        com_array = []
 
-            elif com_array[0] == "word_request":
-                print("DIAG: Server shares word with client!",file=sys.stderr)
-                print("DIAG: SERVER WORD: ", self.target_word, file=sys.stderr)
-                ##SENDING "word_request" MESSAGE TO SERVER USING ARRAY!
-                import pickle
-                com_array = []
-                com_array.append(self.target_word)
-                client_connection.send(pickle.dumps(com_array))
-                # client_connection.close()
+        import socket
+        # create a socket object
 
-            elif com_array[0] == "win_status":
-                if win_status is True:
-                    # out_request = "end_game"
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # get local machine name
+        host = socket.gethostname()
+        port = 9999
+        # connection to hostname on the port.
+        s.connect((host, port))
 
-                    import pickle
-                    com_array = []  # empties array?
-                    com_array.append("end_game")
-                    com_array.append(self.winner_username)
-                    com_array.append(self.winner_id)
-                    client_connection.send(pickle.dumps(com_array))
+        # SENDING "join_request" MESSAGE TO SERVER USING ARRAY!
+        import pickle
+        send_msg = "join_request"
+        com_array.append(send_msg)
+        s.send(pickle.dumps(com_array))
 
-                elif win_status is False:
-                    out_request = "pending_game"
+        # Receive no more than 1024 bytes
+        in_request = s.recv(1024)
+        import pickle
+        com_array = pickle.loads(in_request)
+        self.unique_id = com_array[0]
+        print("CLIENT WAS GIVEN UNIQUE ID $$$ : ", self.unique_id)
+        # close socket
+        s.close()
 
-                    import pickle
-                    com_array = []  # empties array?
-                    com_array.append(out_request)
-                    client_connection.send(pickle.dumps(com_array))
+        # create a socket object again!
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        ##SENDING "word_request" MESSAGE TO SERVER USING ARRAY!
+        import pickle
+        com_array = []
+        send_msg = "word_request"
+        com_array.append(send_msg)
+        s.send(pickle.dumps(com_array))
 
-            elif com_array[0] == "win":
-                win_status = True
-                self.winner_username = com_array[1]
-                self.winner_id = com_array[2]
-                print(" Server_win_check received winner: ", self.winner_username, self.winner_id)
-                ## edw prepei na stelnei se oloys toys client ton nikiti
-                listen_socket.close()
-                break
+        # Receive no more than 1024 bytes
+        in_request = s.recv(1024)
 
+        import pickle
+        com_array = pickle.loads(in_request)
+
+        s.close()
+
+        self.target_word = com_array[0]
 
 
 
